@@ -1,6 +1,5 @@
 const cors = require('cors')
 const express = require('express');
-const bodyParser = require('body-parser');
 const { dbConnection } = require('../database/config');
 
 class Server {
@@ -9,7 +8,7 @@ class Server {
         this.port = process.env.PORT;     
 
         //MONGOOSE
-        dbConnection()
+        this.connectDB()
 
         //MIDDLEWARES
         this.middlewares();
@@ -19,15 +18,16 @@ class Server {
     }
 
 
+    async connectDB(){
+        await dbConnection();
+    }
 
     middlewares() {
         //CORS
         this.app.use( cors() );            
 
         //Lectura y <parseo del body
-        this.app.use( bodyParser.json() );
-        this.app.use(bodyParser.urlencoded({ extended: false }));
-        
+        this.app.use( express.json()  );
 
         //Pagina publica
         this.app.use( express.static('public') );
